@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using VRC.SDKBase;
 
-[assembly: MelonInfo(typeof(Astrum.AstralXUtils), "AstralXUtils", "0.1.0", downloadLink: "github.com/Astrum-Project/AstralXUtils")]
+[assembly: MelonInfo(typeof(Astrum.AstralXUtils), "AstralXUtils", "0.1.1", downloadLink: "github.com/Astrum-Project/AstralXUtils")]
 [assembly: MelonGame("VRChat", "VRChat")]
 [assembly: MelonColor(ConsoleColor.DarkMagenta)]
 
@@ -35,6 +35,8 @@ namespace Astrum
 
             if (index != 0) return;
 
+            targetBone = UnityEngine.XR.XRDevice.isPresent ? VRCPlayerApi.TrackingDataType.LeftHand : VRCPlayerApi.TrackingDataType.Head;
+
             GameObject puppet = new("AstralXUtils-LineRenderer");
             UnityEngine.Object.DontDestroyOnLoad(puppet);
 
@@ -50,7 +52,6 @@ namespace Astrum
         }
 
         // todo: support wrong handed people
-        public override void OnApplicationLateStart() => targetBone = UnityEngine.XR.XRDevice.isPresent ? VRCPlayerApi.TrackingDataType.LeftHand : VRCPlayerApi.TrackingDataType.Head;
         private static VRCPlayerApi.TrackingDataType targetBone;
 
         // todo: optimize this
@@ -97,7 +98,11 @@ namespace Astrum
             }
         }
 
-        private static void Highlight(GameObject go, bool state) => HighlightsFX.prop_HighlightsFX_0.Method_Public_Void_Renderer_Boolean_0(go?.GetComponent<Renderer>(), state);
+        private static void Highlight(GameObject go, bool state)
+        {
+            if (go == null) return;
+            HighlightsFX.prop_HighlightsFX_0.Method_Public_Void_Renderer_Boolean_0(go?.GetComponent<Renderer>(), state);
+        }
 
         [UIButton("XUtils", "Destroy")]
         public static void Destroy()
